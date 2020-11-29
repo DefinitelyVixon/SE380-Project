@@ -8,6 +8,8 @@
 .buildlog/
 .history
 .svn/
+.env*
+.env
 
 # IntelliJ related
 *.iml
@@ -39,3 +41,5 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+

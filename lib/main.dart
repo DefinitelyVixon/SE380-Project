@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'user.dart';
+import 'package:SE380_Project/database.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Google Maps Demo',
+      title: 'Flutter Google Maps Intro',
       home: MapSample(),
     );
   }
@@ -53,5 +56,12 @@ class MapSampleState extends State<MapSample> {
   Future<void> _goTo() async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(_kGoLocation));
+
+    newUser();
+  }
+
+  void newUser(){
+    var user = new User("20190602002", "Kappa123");
+    user.setId(addUser(user));
   }
 }
