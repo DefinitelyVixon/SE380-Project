@@ -1,67 +1,111 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'user.dart';
-import 'package:SE380_Project/database.dart';
+import 'package:SE380_Project/livemap.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(App());
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
+  static const String _title = 'cmon MaN';
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Google Maps Intro',
-      home: MapSample(),
+      title: _title,
+      home: MyStatefulWidget(),
     );
   }
 }
 
-class MapSample extends StatefulWidget {
+/// This is the stateful widget that the main application instantiates.
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({Key key}) : super(key: key);
+
   @override
-  State<MapSample> createState() => MapSampleState();
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-class MapSampleState extends State<MapSample> {
-  Completer<GoogleMapController> _controller = Completer();
+/// This is the private State class that goes with MyStatefulWidget.
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(38.423672, 27.142806),
-    zoom: 15,
-  );
+  final List<Widget> _screens = <Widget>[
+    LikedSongs(),
+    LiveMap(),
+    Settings(),
+  ];
 
-  static final CameraPosition _kGoLocation = CameraPosition(
-      target: LatLng(38.388103, 27.044829),
-      zoom: 15);
-  // bearing: 192.8334901395799,
+  int _selectedIndex = 2;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goTo,
-        label: Text('Go To Location'),
-        icon: Icon(Icons.work),
-      ),
-
+    return Scaffold(
+        body: Center(
+          child: _screens.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Liked Songs',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map_outlined),
+              label: 'Live Map',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.amber[800],
+          onTap: _onItemTapped,
+        ),
     );
   }
+}
 
-  Future<void> _goTo() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kGoLocation));
-
-    newUser();
+class LikedSongs extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('First Screen'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          child: Text('Launch screen'),
+          onPressed: () {
+            // Navigate to the second screen using a named route.
+            Navigator.pushNamed(context, '/second');
+          },
+        ),
+      ),
+    );
   }
+}
 
-  void newUser(){
-    var user = new User("20190602002", "Kappa123");
-    user.setId(addUser(user));
+class Settings extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Second Screen"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // Navigate back to the first screen by popping the current route
+            // off the stack.
+            Navigator.pop(context);
+          },
+          child: Text('Go back!'),
+        ),
+      ),
+    );
   }
 }
