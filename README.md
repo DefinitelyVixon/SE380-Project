@@ -1,3 +1,3 @@
 # SE380_Project
 
-I don't know what to write here.
+We withdrew the course so this project is dead :)
